@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Searchbar from '@/components/Searchbar';
+import Herocarousel from '@/components/Herocarousel';
 
 const Home = () => {
   return (
@@ -27,7 +28,7 @@ const Home = () => {
             </p>
             <Searchbar />
           </div>
-          Hero Carousel
+          <Herocarousel />
         </div>
       </section>
       <section className="trending-section">
