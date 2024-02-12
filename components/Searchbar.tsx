@@ -1,9 +1,8 @@
 'use client';
-import React, { FormEvent } from 'react';
+import { scrapeAndStoreProduct } from '@/lib/actions';
+import React, { FormEvent, useState } from 'react';
 //interactive component need use client directive.
 //read more: https://nextjs.org/docs/app/building-your-application/rendering/client-components
-
-import { useState } from 'react';
 
 const isValidAmazonUrl = (url: string) => {
   try {
@@ -27,7 +26,7 @@ const Searchbar = () => {
   const [searchParam, setSearchParam] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isValidLink = isValidAmazonUrl(searchParam);
     if (!isValidLink) {
@@ -38,7 +37,9 @@ const Searchbar = () => {
     try {
       setIsLoading(true);
       //scrape the product
+      const product = await scrapeAndStoreProduct(searchParam);
     } catch (error) {
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
