@@ -3,6 +3,7 @@ import { scrapeAmazonProduct } from '../scraper';
 import { connectToDB } from '../mongoose';
 import Product from '../models/product.model';
 import { getLowestPrice, getHighestPrice, getAveragePrice } from '../utils';
+import { revalidatePath } from 'next/cache';
 
 export async function scrapeAndStoreProduct(productUrl: string) {
   if (!productUrl) {
@@ -31,7 +32,29 @@ export async function scrapeAndStoreProduct(productUrl: string) {
         averagePrice: getAveragePrice(updatedPriceHistory)
       };
     }
+
+    const newProduct = await Product.findOneAndUpdate(
+      { url: scrapedProduct.url },
+      product,
+      { upsert: true, new: true }
+    );
+
+    revalidatePath(`/products/${newProduct._id}`); //revalidate the product page or you will see cached data
   } catch (error: any) {
     throw new Error(`Failed to create/update product: ${error.message}`);
   }
-} // Path: lib/actions/index.ts
+}
+
+export async function getProductById(productId: string) {
+  try {
+    connectToDB();
+
+    const product = await Product.findOne({ _id: productId });
+
+    if (!product) return null;
+
+    return product;
+  } catch (error) {
+    console.log(error);
+  }
+}
