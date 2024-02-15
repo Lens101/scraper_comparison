@@ -1,9 +1,9 @@
 'use server';
-import { scrapeAmazonProduct } from '../scraper';
-import { connectToDB } from '../mongoose';
-import Product from '../models/product.model';
-import { getLowestPrice, getHighestPrice, getAveragePrice } from '../utils';
 import { revalidatePath } from 'next/cache';
+import { connectToDB } from '../mongoose';
+import { getLowestPrice, getHighestPrice, getAveragePrice } from '../utils';
+import { scrapeAmazonProduct } from '../scraper';
+import Product from '../models/product.model';
 
 export async function scrapeAndStoreProduct(productUrl: string) {
   if (!productUrl) {
@@ -54,6 +54,20 @@ export async function getProductById(productId: string) {
     if (!product) return null;
 
     return product;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getAllProducts() {
+  try {
+    connectToDB();
+
+    const products = await Product.find({});
+
+    if (!products) return null;
+
+    return products;
   } catch (error) {
     console.log(error);
   }
