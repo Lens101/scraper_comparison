@@ -72,3 +72,29 @@ export async function getAllProducts() {
     console.log(error);
   }
 }
+
+export async function addUserEmailToProduct(
+  productId: string,
+  userEmail: string
+) {
+  try {
+    connectToDB();
+    const product = await Product.findById(productId);
+    if (!product) return;
+
+    //3:15:08 - TODO
+    const userExists = product.users.some(
+      (user: User) => user.email === userEmail
+    );
+
+    if (userExists) {
+      product.users.push({ email: userEmail });
+      await product.save();
+      const emailContent = generateEmailBody(product, 'WELCOME');
+    }
+
+    return product;
+  } catch (error) {
+    console.log(error);
+  }
+}
