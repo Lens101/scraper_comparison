@@ -2,13 +2,17 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { useState, Fragment } from 'react';
 import Image from 'next/image';
-import { set } from 'mongoose';
+import { addUserEmailToProduct } from '@/lib/actions';
 
 // Component takes a user email and sends it to the server to track the product, then closes the modal.
 // The server will send an email to the user when the product's price changes.
 // uses: https://headlessui.com/react/dialog
 
-const Modal = () => {
+interface ModalProps {
+  productId: string;
+}
+
+const Modal = ({ productId }: ModalProps) => {
   let [isOpen, setIsOpen] = useState(false);
   let [email, setEmail] = useState('');
   let [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,7 +30,7 @@ const Modal = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    //await addUserEmailToProduct(productId, email);
+    await addUserEmailToProduct(productId, email);
     setIsSubmitting(false);
     setEmail('');
     setIsOpen(false);
