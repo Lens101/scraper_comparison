@@ -31,6 +31,7 @@ export async function GET(request: Request) {
 
         if (!scrapedProduct) return;
 
+        // cron failing here
         const updatedPriceHistory = [
           ...currentProduct.priceHistory,
           {
